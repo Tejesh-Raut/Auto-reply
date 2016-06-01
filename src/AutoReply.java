@@ -24,9 +24,9 @@ public class AutoReply
 		Map<String, String> query = new HashMap<String, String>();
 		Properties properties = new Properties();
 		
-		while(ch != 6)
+		while(ch != 7)
 		{
-			System.out.println("Enter 1 for saving the map \n 2 for loading the map \n 3 for adding entries to map \n 4 to display the entries in the map \n 5 to delete an entry from hashmap \n 6 to terminate the program");
+			System.out.println("Enter \n 1 for saving the map \n 2 for loading the map \n 3 for adding entries to map \n 4 to display the entries in the map \n 5 to delete an entry from hashmap \n 6 to ask a query \n 7 to terminate the program");
 			ch = Integer.parseInt(in.readLine());
 			
 			switch (ch)
@@ -72,22 +72,39 @@ public class AutoReply
 			case 4:
 				for (Map.Entry<String,String> entry : query.entrySet()) 
 				{
-				    System.out.printf("%-30.30s  %-30.30s%n", entry.getKey(), entry.getValue());
+				    System.out.println(entry.getKey()+"\t"+entry.getValue());
 				}
+				pressAnyKeyToContinue();
 				break;
 			case 5:
-				System.out.println();
-				String q = in.readLine();
-				for(Iterator<Map.Entry<String, String>> it = query.entrySet().iterator(); it.hasNext(); ) 
 				{
-				      Map.Entry<String, String> entry = it.next();
-				      if(entry.getKey().equals(q)) 
-				      {
-				        it.remove();
-				      }
+					System.out.println();
+					String q = in.readLine();
+					for(Iterator<Map.Entry<String, String>> it = query.entrySet().iterator(); it.hasNext(); ) 
+					{
+					      Map.Entry<String, String> entry = it.next();
+					      if(entry.getKey().equals(q)) 
+					      {
+					        it.remove();
+					      }
+					}
 				}
 				break;
 			case 6:
+				{
+					System.out.println("Enter your query: ");
+					String q = in.readLine();
+					for(Iterator<Map.Entry<String, String>> it = query.entrySet().iterator(); it.hasNext(); ) 
+					{
+					      Map.Entry<String, String> entry = it.next();
+					      if(entry.getKey().equals(q)) 
+					      {
+					        System.out.println(entry.getValue());
+					      }
+					}
+				}
+				break;
+			case 7:
 				System.out.println("Closing the program .....");
 				break;
 			default:
@@ -98,4 +115,15 @@ public class AutoReply
 		
 		System.out.println("Program closed");
 	}//end of main
+	
+	public static void pressAnyKeyToContinue()
+	 { 
+	        System.out.println("Press any key to continue...");
+	        try
+	        {
+	            System.in.read();
+	        }  
+	        catch(Exception e)
+	        {}  
+	 }
 }//end of class AutoReply
