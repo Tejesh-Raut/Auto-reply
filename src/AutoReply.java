@@ -1,32 +1,40 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
+
+import services.BestMatch;
+import services.KeepKeywords;
 
 public class AutoReply 
 {
-	public static void main (String Args[]) throws IOException
+	public static void main (String Args[]) throws Exception
 	{
 		InputStreamReader read = new InputStreamReader(System.in);
 		BufferedReader in = new BufferedReader(read);
 		
-		//System.out.println("Enter a string: ");
-		//String s=in.readLine();
-		
-		//System.out.println("You entered the string: "+s);
 		int ch = 1;
 
 		Map<String, String> query = new HashMap<String, String>();
 		Properties properties = new Properties();
 		
+		Scanner scanner = new Scanner( new File("NonKeywords.txt"), "UTF-8" );
+		String NonKeywordsString = scanner.useDelimiter("\\A").next();
+		scanner.close();
+		String[] NonKeywords = NonKeywordsString.split("\\s+");
+		
+		//System.out.println(NonKeywords);
+		
 		while(ch != 7)
 		{
-			System.out.println("Enter \n 1 for saving the map \n 2 for loading the map \n 3 for adding entries to map \n 4 to display the entries in the map \n 5 to delete an entry from hashmap \n 6 to ask a query \n 7 to terminate the program");
+			System.out.println("Enter \n 1 for saving the map \n 2 for loading the map \n 3 for adding entries to map \n 4 to display the entries in the map \n 5 to delete an entry from hashmap \n 6 to ask a query \n 7 to terminate the program \n 8 to refresh the keywords for queries \n 9 to add new nonkeywords");
 			ch = Integer.parseInt(in.readLine());
 			
 			switch (ch)
@@ -55,18 +63,22 @@ public class AutoReply
 				System.out.println("Loaded");
 				break;
 			case 3:
-				int c=0;
-				while(c==0)
 				{
-					c=1;
-					System.out.println("Enter the query: ");
-					String q = in.readLine();
-					System.out.println("Enter the reply: ");
-					String r = in.readLine();
-					query.put(q, r);
-					System.out.println("Entry added successfully");
-					System.out.println("Enter 0 to add another entry or enter any other number to continue");
-					c = Integer.parseInt(in.readLine());
+					int c=0;
+					while(c==0)
+					{
+						c=1;
+						System.out.println("Enter the query: ");
+						String q = in.readLine();
+						System.out.println("Enter the reply: ");
+						String r = in.readLine();
+						String[] allwords = KeepKeywords.SeparateWords(q);
+						String Keywords = KeepKeywords.Keywords(allwords, NonKeywords);
+						query.put(Keywords, r);
+						System.out.println("Entry added successfully");
+						System.out.println("Enter 0 to add another entry or enter any other number to continue");
+						c = Integer.parseInt(in.readLine());
+					}
 				}
 				break;
 			case 4:
@@ -78,7 +90,7 @@ public class AutoReply
 				break;
 			case 5:
 				{
-					System.out.println();
+					System.out.println("Enter the query to be deleted");
 					String q = in.readLine();
 					for(Iterator<Map.Entry<String, String>> it = query.entrySet().iterator(); it.hasNext(); ) 
 					{
@@ -94,18 +106,51 @@ public class AutoReply
 				{
 					System.out.println("Enter your query: ");
 					String q = in.readLine();
-					for(Iterator<Map.Entry<String, String>> it = query.entrySet().iterator(); it.hasNext(); ) 
-					{
-					      Map.Entry<String, String> entry = it.next();
-					      if(entry.getKey().equals(q)) 
-					      {
-					        System.out.println(entry.getValue());
-					      }
-					}
+					String q1 = BestMatch.BestQuery(q, query);
+					System.out.println(query.get(q1));
 				}
 				break;
 			case 7:
 				System.out.println("Closing the program .....");
+				break;
+			case 8:
+				{
+					System.out.println("Converting all existing queries to new Keywords");
+					String q,r;
+					Map<String, String> query1 = new HashMap<String, String>(query);
+					for (Map.Entry<String,String> entry : query1.entrySet()) 
+					{
+						q=entry.getKey();
+						r=entry.getValue();
+						query.remove(q);
+						String[] allwords = KeepKeywords.SeparateWords(q);
+						String Keywords = KeepKeywords.Keywords(allwords, NonKeywords);
+						//System.out.println(Keywords);
+						query.put(Keywords, r);
+					}
+					System.out.println("Keywords for queries refreshed successfully");
+				}
+				break;
+			case 9:
+				{
+					int c=0;
+					String w;
+					FileWriter fw = new FileWriter("NonKeywords.txt",true);
+					while(c==0)
+					{
+						System.out.println("Enter a word to be added to non-keywords list ");
+						w = in.readLine();
+						fw.write(w+" ");
+						System.out.println("Enter 0 to add a new word or enter any other number to finish");
+						c = Integer.parseInt(in.readLine());
+					}
+					fw.close();
+					
+					scanner = new Scanner( new File("NonKeywords.txt"), "UTF-8" );
+					NonKeywordsString = scanner.useDelimiter("\\A").next();
+					scanner.close();
+					NonKeywords = NonKeywordsString.split("\\s+");
+				}
 				break;
 			default:
 				System.out.println("Incorrect choice. Please try again");
