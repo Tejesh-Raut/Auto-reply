@@ -34,7 +34,7 @@ public class AutoReply
 		
 		while(ch != 7)
 		{
-			System.out.println("Enter \n 1 for saving the map \n 2 for loading the map \n 3 for adding entries to map \n 4 to display the entries in the map \n 5 to delete an entry from hashmap \n 6 to ask a query \n 7 to terminate the program \n 8 to refresh the keywords for queries \n 9 to add new nonkeywords");
+			System.out.println("Enter \n 1 for saving the map \t\t\t 2 for loading the map \n 3 for adding entries to map \t\t 4 to display the entries in the map \n 5 to delete an entry from hashmap \t 6 to ask a query \n 7 to terminate the program \t\t 8 to refresh the keywords for queries \n 9 to add new nonkeywords \t\t 10 to add synonyms");
 			ch = Integer.parseInt(in.readLine());
 			
 			switch (ch)
@@ -65,13 +65,18 @@ public class AutoReply
 			case 3:
 				{
 					int c=0;
+					String q,r,line;
 					while(c==0)
 					{
 						c=1;
+						r="";
 						System.out.println("Enter the query: ");
-						String q = in.readLine();
+						q = in.readLine();
 						System.out.println("Enter the reply: ");
-						String r = in.readLine();
+						while ((line = in.readLine()) != null && line.length()!= 0)  
+						{
+							r = r+"\n"+line;
+						}
 						String[] allwords = KeepKeywords.SeparateWords(q);
 						String Keywords = KeepKeywords.Keywords(allwords, NonKeywords);
 						query.put(Keywords, r);
@@ -152,6 +157,21 @@ public class AutoReply
 					NonKeywords = NonKeywordsString.split("\\s+");
 				}
 				break;
+			case 10:
+				{
+					int c = 0;
+					FileWriter fw = new FileWriter("Synonyms.txt",true);
+					while(c == 0)
+					{
+						System.out.println("Enter the synonyms in a line separated by spaces");
+						String s = in.readLine();
+						fw.write(s+"\n");
+						System.out.println("Enter 0 to add a new word or enter any other number to finish");
+						c = Integer.parseInt(in.readLine());
+					}
+					fw.close();
+				}
+				break;
 			default:
 				System.out.println("Incorrect choice. Please try again");
 				break;
@@ -169,6 +189,6 @@ public class AutoReply
 	            System.in.read();
 	        }  
 	        catch(Exception e)
-	        {}  
+	        {}
 	 }
 }//end of class AutoReply
