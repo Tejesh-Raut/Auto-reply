@@ -189,7 +189,7 @@ public class AutoReply
                 // display them in a message dialog
                 JOptionPane.showMessageDialog(frame, scrollPane);
             	//JOptionPane.showMessageDialog (null, reply, "Reply", JOptionPane.INFORMATION_MESSAGE);
-				button1.setBackground(Color.cyan);
+				button2.setBackground(Color.cyan);
             }
         });
 		
@@ -339,7 +339,7 @@ public class AutoReply
 					JOptionPane.showMessageDialog (null, "File not found", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					e1.printStackTrace();
 				}
-				button4.setBackground(Color.cyan);
+				button6.setBackground(Color.cyan);
             }
 
         });
@@ -373,7 +373,7 @@ public class AutoReply
 					}
 				}
 				JOptionPane.showMessageDialog (null, "Keywords for queries refreshed successfully", "Reply", JOptionPane.INFORMATION_MESSAGE);
-				button4.setBackground(Color.cyan);
+				button7.setBackground(Color.cyan);
             }
         });
 		
@@ -413,7 +413,7 @@ public class AutoReply
 					JOptionPane.showMessageDialog (null, "File not found", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					e1.printStackTrace();
 				}
-				button4.setBackground(Color.cyan);
+				button8.setBackground(Color.cyan);
             }
         });
 		
