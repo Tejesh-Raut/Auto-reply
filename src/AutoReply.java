@@ -133,7 +133,12 @@ public class AutoReply
             	try 
             	{
 					String q1 = BestMatch.BestQuery(q, query1);
-					JOptionPane.showMessageDialog (null, query1.get(q1), "Reply", JOptionPane.INFORMATION_MESSAGE);
+					JTextArea msg = new JTextArea(query1.get(q1), 10, 50);
+					msg.setLineWrap(true);
+					msg.setWrapStyleWord(true);
+	                msg.setEditable(false);
+					JScrollPane scrollPane = new JScrollPane(msg);
+					JOptionPane.showMessageDialog(null, scrollPane);
 				} 
             	catch (FileNotFoundException e1) 
             	{
@@ -149,7 +154,7 @@ public class AutoReply
             public void actionPerformed(ActionEvent e)
             {
             	String reply ="";
-            	for (Map.Entry<String,String> entry : query1.entrySet()) 
+            	for (Map.Entry<String,String> entry : query1.entrySet()) //Displaying the entries stored in query1
 				{
 				    reply = reply +(entry.getKey()+"\n----------------------------------------------------------------------------------------------------\n"+entry.getValue()+"\n********************************************************************************\n\n\n");
 				}
@@ -225,14 +230,15 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+            	Properties properties2 = new Properties();
 				{
 					for (Map.Entry<String,String> entry : query1.entrySet()) 
 					{
-					    properties1.put(entry.getKey(), entry.getValue());
+					    properties2.put(entry.getKey(), entry.getValue());
 					}
 					try 
 					{
-						properties1.store(new FileOutputStream("data.properties"), null);
+						properties2.store(new FileOutputStream("data.properties"), null);
 					} 
 					catch (FileNotFoundException e1) 
 					{
@@ -258,9 +264,8 @@ public class AutoReply
 					String q1 = BestMatch.BestQuery(q, query1);
 					int dialogButton = JOptionPane.YES_NO_OPTION;
 					int dialogResult = JOptionPane.showConfirmDialog (null, "Would You like to remove following entry: \n"+q1+"\n----------------------------------------------------------------------------------------------------\n"+query1.get(q1),"Warning",dialogButton);
-					if(dialogResult == 0) 
+					if(dialogResult == 0) //yes option
 					{
-						//System.out.println("Yes option");
 						for(Iterator<Map.Entry<String, String>> it = query1.entrySet().iterator(); it.hasNext(); ) 
 						{
 						      Map.Entry<String, String> entry = it.next();
@@ -271,9 +276,8 @@ public class AutoReply
 						}
 						JOptionPane.showMessageDialog (null, "Entry deleted", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					} 
-					else 
+					else //no option
 					{
-						//System.out.println("No Option");
 						JOptionPane.showMessageDialog (null, "Entry not deleted", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					} 
 				} 
