@@ -7,15 +7,14 @@ import java.util.Scanner;
 
 public class BestMatch 
 {
-	public static String BestQuery(String q , Map<String, String> query) throws FileNotFoundException
+	public static String BestQuery(String q , String[] NonKeywords, Map<String, String> query) throws Exception
 	{
 		String s,s1, syn;
 		s1="";
 		String[] ss,qs, syns;
-		q = q.replaceAll("[^\\w\\s\\d' -]","");//removes all characters except ', -, alphabets, spaces, digits
-		q = q.replaceAll("'s", "");// remove all 's
-		q = q.replaceAll("-", " ");// replace - with spaces
-		qs = q.split("\\s+");// words from the query string
+		String[] allwords = KeepKeywords.SeparateWords(q);
+		String Keywords = KeepKeywords.Keywords(allwords, NonKeywords);
+		qs = Keywords.split("\\s+");// words from the query string
 		int c=0;
 		int cmax = 0;
 		for (Map.Entry<String,String> entry : query.entrySet()) 

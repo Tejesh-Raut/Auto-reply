@@ -37,7 +37,9 @@ public class AutoReply
 		//int ch = 1;
 
 		Map<String, String> query = new HashMap<String, String>();
+		Map<String, String> original = new HashMap<String, String>();
 		Properties properties = new Properties();
+		Properties originalProperties = new Properties();
 		
 		Scanner scanner = new Scanner( new File("NonKeywords.txt"), "UTF-8" );
 		String NonKeywordsString = scanner.useDelimiter("\\A").next();
@@ -49,7 +51,7 @@ public class AutoReply
 		//jTextArea.append( "Hello World.-----------------------------------------------------" );
 		final JFrame frame = new JFrame("Auto Reply selector");
 		frame.setVisible(true);
-		frame.setSize(1000,600);
+		frame.setSize(550,600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//*TextAreaOutputStream taOutputStream = new TextAreaOutputStream(jTextArea, "");
 
@@ -76,23 +78,24 @@ public class AutoReply
 		panel1.add(button1);
 		//*button1.setActionCommand("1");
 		
-		JButton button2 = new JButton("Display the entries in the map");
+		JButton button2 = new JButton("Display the entries");
+		button2.setPreferredSize(new Dimension(250, 50));
 		panel2.add(button2);
 		//*button2.setActionCommand("2");
 		
-		JButton button3 = new JButton("Add entries to map");
+		JButton button3 = new JButton("Add entries");
 		panel1.add(button3);
 		//*button3.setActionCommand("3");
 		
-		JButton button4 = new JButton("Load the map");
+		JButton button4 = new JButton("Load from file");
 		panel2.add(button4);
 		//*button4.setActionCommand("4");
 		
-		JButton button5 = new JButton("Save the map");
+		JButton button5 = new JButton("Save to file");
 		panel1.add(button5);
 		//*button5.setActionCommand("5");
 		
-		JButton button6 = new JButton("Delete an entry from hashmap");
+		JButton button6 = new JButton("Delete an entry");
 		panel2.add(button6);
 		//*button6.setActionCommand("6");
 		
@@ -124,7 +127,9 @@ public class AutoReply
 		button10.setEnabled(true);
 		
 		final Map<String, String> query1 = query;//Create a final copy the map 'query'
-		button1.addActionListener(new ActionListener() 
+		final Map<String, String> original1 = original;
+		final String[] NonKeywords1 = NonKeywords;
+		button1.addActionListener(new ActionListener() //search for a query
 		{
 			@Override
             public void actionPerformed(ActionEvent e)
@@ -132,7 +137,7 @@ public class AutoReply
             	String q = JOptionPane.showInputDialog(null,"Enter your query: ");
             	try 
             	{
-					String q1 = BestMatch.BestQuery(q, query1);
+					String q1 = BestMatch.BestQuery(q,NonKeywords1, query1);
 					JTextArea msg = new JTextArea(query1.get(q1), 10, 50);
 					msg.setLineWrap(true);
 					msg.setWrapStyleWord(true);
@@ -140,7 +145,7 @@ public class AutoReply
 					JScrollPane scrollPane = new JScrollPane(msg);
 					JOptionPane.showMessageDialog(null, scrollPane);
 				} 
-            	catch (FileNotFoundException e1) 
+            	catch (Exception e1) 
             	{
 					JOptionPane.showMessageDialog (null, "File not found", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					e1.printStackTrace();
@@ -148,7 +153,7 @@ public class AutoReply
             }
         });
 		
-		button2.addActionListener(new ActionListener() 
+		button2.addActionListener(new ActionListener() //Display the entries
 		{
             @Override
             public void actionPerformed(ActionEvent e)
@@ -156,7 +161,7 @@ public class AutoReply
             	String reply ="";
             	for (Map.Entry<String,String> entry : query1.entrySet()) //Displaying the entries stored in query1
 				{
-				    reply = reply +(entry.getKey()+"\n----------------------------------------------------------------------------------------------------\n"+entry.getValue()+"\n********************************************************************************\n\n\n");
+				    reply = reply +(original1.get(entry.getKey())+"\n----------------------------------------------------------------------------------------------------\n"+entry.getValue()+"\n********************************************************************************\n\n\n");
 				}
             	JFrame frame = new JFrame("Reply");
             	JTextArea textArea = new JTextArea(40, 100);
@@ -172,8 +177,7 @@ public class AutoReply
             }
         });
 		
-		final String[] NonKeywords1 = NonKeywords;
-		button3.addActionListener(new ActionListener() 
+		button3.addActionListener(new ActionListener() //Add new entry
 		{
             @SuppressWarnings("static-access")
 			@Override
@@ -188,6 +192,7 @@ public class AutoReply
 					allwords = KeepKeywords.SeparateWords(q);
 					String Keywords = KeepKeywords.Keywords(allwords, NonKeywords1);
 					query1.put(Keywords, r);
+					original1.put(Keywords, q);
 					JOptionPane.showMessageDialog (null, "Entry added successfully", "Reply", JOptionPane.INFORMATION_MESSAGE);
 				} 
 				catch (Exception e1) 
@@ -198,7 +203,8 @@ public class AutoReply
         });
 		
 		final Properties properties1 = properties;
-		button4.addActionListener(new ActionListener() 
+		final Properties originalProperties1 = originalProperties;
+		button4.addActionListener(new ActionListener() //Load from file
 		{
             @Override
             public void actionPerformed(ActionEvent e)
@@ -206,7 +212,8 @@ public class AutoReply
 				{
 					try 
 					{
-						properties1.load(new FileInputStream("data.properties"));
+						properties1.load(new FileInputStream("reply.properties"));
+						originalProperties1.load(new FileInputStream("query.properties"));
 					} 
 					catch (FileNotFoundException e1) 
 					{
@@ -220,25 +227,35 @@ public class AutoReply
 					{
 					   query1.put(key, properties1.get(key).toString());
 					}
+					for (String key : originalProperties1.stringPropertyNames())
+					{
+						original1.put(key, originalProperties1.get(key).toString());
+					}
 				}
 				JOptionPane.showMessageDialog (null, "Loaded", "Reply", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 		
-		button5.addActionListener(new ActionListener() 
+		button5.addActionListener(new ActionListener() //save to file
 		{
             @Override
             public void actionPerformed(ActionEvent e)
             {
             	Properties properties2 = new Properties();
+            	Properties originalProperties2 = new Properties();
 				{
 					for (Map.Entry<String,String> entry : query1.entrySet()) 
 					{
 					    properties2.put(entry.getKey(), entry.getValue());
 					}
+					for (Map.Entry<String,String> entry : original1.entrySet()) 
+					{
+					    originalProperties2.put(entry.getKey(), entry.getValue());
+					}
 					try 
 					{
-						properties2.store(new FileOutputStream("data.properties"), null);
+						properties2.store(new FileOutputStream("reply.properties"), null);
+						originalProperties2.store(new FileOutputStream("query.properties"), null);
 					} 
 					catch (FileNotFoundException e1) 
 					{
@@ -253,7 +270,7 @@ public class AutoReply
             }
         });
 		
-		button6.addActionListener(new ActionListener() 
+		button6.addActionListener(new ActionListener() //Delete an entry
 		{
             @Override
             public void actionPerformed(ActionEvent e)
@@ -261,12 +278,25 @@ public class AutoReply
 				String q = JOptionPane.showInputDialog(null,"Enter the query to be deleted: ");
 				try 
             	{
-					String q1 = BestMatch.BestQuery(q, query1);
+					String q1 = BestMatch.BestQuery(q, NonKeywords1, query1);
 					int dialogButton = JOptionPane.YES_NO_OPTION;
-					int dialogResult = JOptionPane.showConfirmDialog (null, "Would You like to remove following entry: \n"+q1+"\n----------------------------------------------------------------------------------------------------\n"+query1.get(q1),"Warning",dialogButton);
+					JTextArea msg = new JTextArea("Would You like to remove following entry: \n"+original1.get(q1)+"\n----------------------------------------------------------------------------------------------------\n"+query1.get(q1), 10, 50);
+					msg.setLineWrap(true);
+					msg.setWrapStyleWord(true);
+	                msg.setEditable(false);
+					JScrollPane scrollPane = new JScrollPane(msg);
+					int dialogResult = JOptionPane.showConfirmDialog (null, scrollPane,"Warning",dialogButton);
 					if(dialogResult == 0) //yes option
 					{
 						for(Iterator<Map.Entry<String, String>> it = query1.entrySet().iterator(); it.hasNext(); ) 
+						{
+						      Map.Entry<String, String> entry = it.next();
+						      if(entry.getKey().equals(q1)) 
+						      {
+						        it.remove();
+						      }
+						}
+						for(Iterator<Map.Entry<String, String>> it = original1.entrySet().iterator(); it.hasNext(); ) 
 						{
 						      Map.Entry<String, String> entry = it.next();
 						      if(entry.getKey().equals(q1)) 
@@ -281,7 +311,7 @@ public class AutoReply
 						JOptionPane.showMessageDialog (null, "Entry not deleted", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					} 
 				} 
-            	catch (FileNotFoundException e1) 
+            	catch (Exception e1) 
             	{
 					JOptionPane.showMessageDialog (null, "File not found", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					e1.printStackTrace();
@@ -290,24 +320,27 @@ public class AutoReply
 
         });
 		
-		button7.addActionListener(new ActionListener() 
+		button7.addActionListener(new ActionListener() //Refresh keywords
 		{
             @Override
             public void actionPerformed(ActionEvent e)
             {
-				String q,r;
+				String q,qoriginal,r;
 				Map<String, String> query2 = new HashMap<String, String>(query1);
 				for (Map.Entry<String,String> entry : query2.entrySet()) 
 				{
 					q=entry.getKey();
+					qoriginal = original1.get(q);
 					r=entry.getValue();
 					query1.remove(q);
+					original1.remove(q);
 					String[] allwords;
 					try 
 					{
-						allwords = KeepKeywords.SeparateWords(q);
+						allwords = KeepKeywords.SeparateWords(qoriginal);
 						String Keywords = KeepKeywords.Keywords(allwords, NonKeywords1);
 						query1.put(Keywords, r);
+						original1.put(Keywords, qoriginal);
 					} 
 					catch (Exception e1) 
 					{
@@ -321,7 +354,7 @@ public class AutoReply
 		final Scanner[] scanner1 = {scanner};
 		final String[] NonKeywordsString1 = {NonKeywordsString};
 		final String[][] NonKeywords2 = {NonKeywords1};
-		button8.addActionListener(new ActionListener() 
+		button8.addActionListener(new ActionListener() //add new nonkeyword
 		{
             @Override
             public void actionPerformed(ActionEvent e)
@@ -356,7 +389,7 @@ public class AutoReply
             }
         });
 		
-		button9.addActionListener(new ActionListener() 
+		button9.addActionListener(new ActionListener() // add new synonyms
 		{
             @Override
             public void actionPerformed(ActionEvent e)
@@ -376,7 +409,7 @@ public class AutoReply
             }
         });
 		
-		button10.addActionListener(new ActionListener() 
+		button10.addActionListener(new ActionListener() //exit button
 		{
             @Override
             public void actionPerformed(ActionEvent e)
@@ -438,7 +471,7 @@ public class AutoReply
 			case 4:
 				System.out.println("Loading the map ...");
 				{
-					properties.load(new FileInputStream("data.properties"));
+					properties.load(new FileInputStream("reply.properties"));
 	
 					for (String key : properties.stringPropertyNames())
 					{
@@ -454,7 +487,7 @@ public class AutoReply
 					{
 					    properties.put(entry.getKey(), entry.getValue());
 					}
-					properties.store(new FileOutputStream("data.properties"), null);
+					properties.store(new FileOutputStream("reply.properties"), null);
 				}
 				System.out.println("Saved");
 				break;
@@ -561,6 +594,7 @@ class MyJOptionPane extends JOptionPane
     class GetData extends JDialog implements ActionListener
     {
       JTextArea ta = new JTextArea(10,50);
+	  JScrollPane scrollPane = new JScrollPane(ta);
       JButton btnOK = new JButton("   OK   ");
       JButton btnCancel = new JButton("Cancel");
       String str = null;
@@ -571,7 +605,7 @@ class MyJOptionPane extends JOptionPane
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocation(400,300);
         getContentPane().add(new JLabel(message),BorderLayout.NORTH);
-        getContentPane().add(ta,BorderLayout.CENTER);
+        getContentPane().add(scrollPane,BorderLayout.CENTER);
         JPanel jp = new JPanel();
         btnOK.addActionListener(this);
         btnCancel.addActionListener(this);

@@ -1,1 +1,1 @@
-# Auto-reply
+# Auto-reply generator with GUI
