@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -73,45 +74,45 @@ public class AutoReply
 		//panel3.add(new JScrollPane(inputArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 	    //*System.setOut(new PrintStream(taOutputStream));
 		
-		JButton button1 = new JButton("Ask a query");
+		final JButton button1 = new JButton("Ask a query");
 		button1.setPreferredSize(new Dimension(250, 50));
 		panel1.add(button1);
 		//*button1.setActionCommand("1");
 		
-		JButton button2 = new JButton("Display the entries");
+		final JButton button2 = new JButton("Display the entries");
 		button2.setPreferredSize(new Dimension(250, 50));
 		panel2.add(button2);
 		//*button2.setActionCommand("2");
 		
-		JButton button3 = new JButton("Add entries");
+		final JButton button3 = new JButton("Add entries");
 		panel1.add(button3);
 		//*button3.setActionCommand("3");
 		
-		JButton button4 = new JButton("Load from file");
+		final JButton button4 = new JButton("Load from file");
 		panel2.add(button4);
 		//*button4.setActionCommand("4");
 		
-		JButton button5 = new JButton("Save to file");
+		final JButton button5 = new JButton("Save to file");
 		panel1.add(button5);
 		//*button5.setActionCommand("5");
 		
-		JButton button6 = new JButton("Delete an entry");
+		final JButton button6 = new JButton("Delete an entry");
 		panel2.add(button6);
 		//*button6.setActionCommand("6");
 		
-		JButton button7 = new JButton("Refresh the keywords");
+		final JButton button7 = new JButton("Refresh the keywords");
 		panel1.add(button7);
 		//*button7.setActionCommand("7");
 		
-		JButton button8 = new JButton("Add new nonkeywords");
+		final JButton button8 = new JButton("Add new nonkeywords");
 		panel2.add(button8);
 		//*button8.setActionCommand("8");
 		
-		JButton button9 = new JButton("Add new synonyms");
+		final JButton button9 = new JButton("Add new synonyms");
 		panel1.add(button9);
 		//*button9.setActionCommand("9");
 		
-		JButton button10 = new JButton("Terminate the program");
+		final JButton button10 = new JButton("Terminate the program");
 		panel2.add(button10);
 		//*button10.setActionCommand("10");
 		
@@ -126,6 +127,17 @@ public class AutoReply
 		button9.setEnabled(true);
 		button10.setEnabled(true);
 		
+		button1.setBackground(Color.cyan);
+		button2.setBackground(Color.cyan);
+		button3.setBackground(Color.cyan);
+		button4.setBackground(Color.cyan);
+		button5.setBackground(Color.cyan);
+		button6.setBackground(Color.cyan);
+		button7.setBackground(Color.cyan);
+		button8.setBackground(Color.cyan);
+		button9.setBackground(Color.cyan);
+		button10.setBackground(Color.cyan);
+		
 		final Map<String, String> query1 = query;//Create a final copy the map 'query'
 		final Map<String, String> original1 = original;
 		final String[] NonKeywords1 = NonKeywords;
@@ -134,6 +146,7 @@ public class AutoReply
 			@Override
             public void actionPerformed(ActionEvent e)
             {
+				button1.setBackground(Color.red);
             	String q = JOptionPane.showInputDialog(null,"Enter your query: ");
             	try 
             	{
@@ -150,6 +163,7 @@ public class AutoReply
 					JOptionPane.showMessageDialog (null, "File not found", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					e1.printStackTrace();
 				}
+        		button1.setBackground(Color.cyan);
             }
         });
 		
@@ -158,6 +172,7 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+				button2.setBackground(Color.red);
             	String reply ="";
             	for (Map.Entry<String,String> entry : query1.entrySet()) //Displaying the entries stored in query1
 				{
@@ -174,6 +189,7 @@ public class AutoReply
                 // display them in a message dialog
                 JOptionPane.showMessageDialog(frame, scrollPane);
             	//JOptionPane.showMessageDialog (null, reply, "Reply", JOptionPane.INFORMATION_MESSAGE);
+				button1.setBackground(Color.cyan);
             }
         });
 		
@@ -183,6 +199,7 @@ public class AutoReply
 			@Override
             public void actionPerformed(ActionEvent e)
             {
+				button3.setBackground(Color.red);
 				String q,r;
 				q = JOptionPane.showInputDialog(null,"Enter your query: ");
 				r = new MyJOptionPane().showInputDialog("Enter your reply: ");
@@ -199,6 +216,7 @@ public class AutoReply
 				{
 					e1.printStackTrace();
 				}
+				button3.setBackground(Color.cyan);
             }
         });
 		
@@ -209,6 +227,7 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+				button4.setBackground(Color.red);
 				{
 					try 
 					{
@@ -233,6 +252,7 @@ public class AutoReply
 					}
 				}
 				JOptionPane.showMessageDialog (null, "Loaded", "Reply", JOptionPane.INFORMATION_MESSAGE);
+				button4.setBackground(Color.cyan);
             }
         });
 		
@@ -241,6 +261,7 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+				button5.setBackground(Color.red);
             	Properties properties2 = new Properties();
             	Properties originalProperties2 = new Properties();
 				{
@@ -267,6 +288,7 @@ public class AutoReply
 					}
 				}
 				JOptionPane.showMessageDialog (null, "Saved", "Reply", JOptionPane.INFORMATION_MESSAGE);
+				button5.setBackground(Color.cyan);
             }
         });
 		
@@ -275,6 +297,7 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+				button6.setBackground(Color.red);
 				String q = JOptionPane.showInputDialog(null,"Enter the query to be deleted: ");
 				try 
             	{
@@ -316,6 +339,7 @@ public class AutoReply
 					JOptionPane.showMessageDialog (null, "File not found", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					e1.printStackTrace();
 				}
+				button4.setBackground(Color.cyan);
             }
 
         });
@@ -325,6 +349,7 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+				button7.setBackground(Color.red);
 				String q,qoriginal,r;
 				Map<String, String> query2 = new HashMap<String, String>(query1);
 				for (Map.Entry<String,String> entry : query2.entrySet()) 
@@ -348,6 +373,7 @@ public class AutoReply
 					}
 				}
 				JOptionPane.showMessageDialog (null, "Keywords for queries refreshed successfully", "Reply", JOptionPane.INFORMATION_MESSAGE);
+				button4.setBackground(Color.cyan);
             }
         });
 		
@@ -359,6 +385,7 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+				button8.setBackground(Color.red);
 				String w;
 				FileWriter fw;
 				try 
@@ -386,6 +413,7 @@ public class AutoReply
 					JOptionPane.showMessageDialog (null, "File not found", "Reply", JOptionPane.INFORMATION_MESSAGE);
 					e1.printStackTrace();
 				}
+				button4.setBackground(Color.cyan);
             }
         });
 		
@@ -394,6 +422,7 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+				button9.setBackground(Color.red);
 				FileWriter fw;
 				try 
 				{
@@ -406,6 +435,7 @@ public class AutoReply
 				{
 					e1.printStackTrace();
 				}
+				button9.setBackground(Color.cyan);
             }
         });
 		
@@ -414,8 +444,10 @@ public class AutoReply
             @Override
             public void actionPerformed(ActionEvent e)
             {
+				button10.setBackground(Color.red);
             	frame.dispose();
             	System.exit(0);
+				button10.setBackground(Color.cyan);
             }
         });
 		
